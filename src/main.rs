@@ -39,6 +39,8 @@ impl ImageWriter {
 const WIDTH: usize = 100;
 const HEIGHT: usize = 100;
 
+mod vector;
+
 fn main() {
     let mut image_writer = ImageWriter::new(WIDTH, HEIGHT);
 
