@@ -24,7 +24,7 @@ impl ImageWriter {
     }
 
     // NOTE: vector is normalized (each component is in [0, 1])
-    pub fn set_pixel_color_vec(&mut self, x: usize, y: usize, color_vec: &Vector3f) {
+    pub fn set_pixel_color_vec(&mut self, x: usize, y: usize, color_vec: &Vector3d) {
         let r = (color_vec[0] * 255.0) as u32;
         let g = (color_vec[1] * 255.0) as u32;
         let b = (color_vec[2] * 255.0) as u32;

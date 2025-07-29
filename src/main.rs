@@ -13,9 +13,9 @@ fn main() {
 
     for y in 0..HEIGHT {
         for x in 0..WIDTH {
-            let color = Vector3f::new([
-                (x as f32) / (WIDTH as f32),
-                (y as f32) / (HEIGHT as f32),
+            let color = Vector3d::new([
+                (x as f64) / (WIDTH as f64),
+                (y as f64) / (HEIGHT as f64),
                 0.0,
             ]);
             image_writer.set_pixel_color_vec(x, y, &color);
