@@ -1,3 +1,5 @@
+mod vector;
+
 // origin: top left corner
 // x: points to right
 // y: points to bottom
@@ -38,8 +40,6 @@ impl ImageWriter {
 
 const WIDTH: usize = 100;
 const HEIGHT: usize = 100;
-
-mod vector;
 
 fn main() {
     let mut image_writer = ImageWriter::new(WIDTH, HEIGHT);
