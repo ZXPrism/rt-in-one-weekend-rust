@@ -141,6 +141,23 @@ where
     }
 }
 
+impl<Ty, const N: usize> Mul<Ty> for &Vector<Ty, N>
+where
+    Ty: Mul<Output = Ty> + Default + Copy,
+{
+    type Output = Vector<Ty, N>;
+
+    fn mul(self, rhs: Ty) -> Self::Output {
+        let mut res = Vector::zeros();
+
+        for i in 0..N {
+            res.data[i] = self.data[i] * rhs;
+        }
+
+        res
+    }
+}
+
 impl<Ty, const N: usize> Div<Ty> for &Vector<Ty, N>
 where
     Ty: Div<Output = Ty> + Default + Copy,
