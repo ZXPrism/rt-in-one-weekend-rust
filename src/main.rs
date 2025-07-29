@@ -1,3 +1,4 @@
+mod camera;
 mod image_writer;
 mod ray;
 mod vector;
