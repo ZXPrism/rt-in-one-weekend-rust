@@ -1,3 +1,5 @@
+use crate::vector::*;
+
 // origin: top left corner
 // x: points to right
 // y: points to bottom
@@ -13,9 +15,19 @@ impl ImageWriter {
     }
 
     pub fn set_pixel_color(&mut self, x: usize, y: usize, r: u8, g: u8, b: u8) {
-        let r: u32 = r.into();
-        let g: u32 = g.into();
-        let b: u32 = b.into();
+        let r = r as u32;
+        let g = g as u32;
+        let b = b as u32;
+        let new_pixel = (r << 16) + (g << 8) + b;
+
+        self.image[y][x] = new_pixel;
+    }
+
+    // NOTE: vector is normalized (each component is in [0, 1])
+    pub fn set_pixel_color_vec(&mut self, x: usize, y: usize, color_vec: &Vector3f) {
+        let r = (color_vec[0] * 255.0) as u32;
+        let g = (color_vec[1] * 255.0) as u32;
+        let b = (color_vec[2] * 255.0) as u32;
         let new_pixel = (r << 16) + (g << 8) + b;
 
         self.image[y][x] = new_pixel;
