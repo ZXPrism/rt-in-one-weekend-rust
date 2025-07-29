@@ -1,4 +1,5 @@
 mod image_writer;
+mod ray;
 mod vector;
 
 use image_writer::ImageWriter;
