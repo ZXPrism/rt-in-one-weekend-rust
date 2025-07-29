@@ -1,4 +1,4 @@
-mod vector;
+use super::Vector;
 
 #[allow(dead_code)]
 pub type Vector2f = Vector<f32, 2>;
