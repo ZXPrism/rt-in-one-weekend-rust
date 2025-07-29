@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Div, Index, IndexMut, Mul, Sub};
+use std::ops::{Add, AddAssign, Div, Index, IndexMut, Mul, MulAssign, Sub};
 
 pub mod alias;
 pub use alias::*;
@@ -158,6 +158,17 @@ where
         }
 
         res
+    }
+}
+
+impl<Ty, const N: usize> MulAssign<Ty> for Vector<Ty, N>
+where
+    Ty: MulAssign + Default + Copy,
+{
+    fn mul_assign(&mut self, rhs: Ty) {
+        for i in 0..N {
+            self.data[i] *= rhs;
+        }
     }
 }
 
