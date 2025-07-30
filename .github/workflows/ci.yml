@@ -37,8 +37,8 @@ jobs:
           if [[ "${{ github.event.inputs.target }}" == *"windows"* ]]; then
             EXT=".exe"
             BINARY_PATH="./target/${{ github.event.inputs.target }}/release/$BINARY_NAME$EXT"
-            ARTIFACT_NAME="binary-${{ github.event.inputs.target }}.zip"
-            zip -j $ARTIFACT_NAME $BINARY_PATH
+            ARTIFACT_NAME="binary-${{ github.event.inputs.target }}.tar.gz"
+            tar czf $ARTIFACT_NAME $BINARY_PATH
           else
             EXT=""
             BINARY_PATH="./target/${{ github.event.inputs.target }}/release/$BINARY_NAME"
