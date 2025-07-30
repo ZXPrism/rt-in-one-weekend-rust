@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: 'Target platform'
+        description: "Target platform"
         required: true
         type: choice
         options:
@@ -15,42 +15,40 @@ on:
 jobs:
   build:
     runs-on: ${{
-      contains(github.event.inputs.target, 'windows') && 'windows-latest' ||
-      contains(github.event.inputs.target, 'apple') && 'macos-latest' ||
-      'ubuntu-latest'
-    }}
+      contains(github.event.inputs.target, 'windows') && 'windows-latest' || contains(github.event.inputs.target, 'apple') && 'macos-latest' || 'ubuntu-latest' }}
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Install Rust
-      uses: dtolnay/rust-toolchain@master
-      with:
-        toolchain: stable
-        target: ${{ github.event.inputs.target }}
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          target: ${{ github.event.inputs.target }}
 
-    - name: Build release binary
-      run: cargo build --release --target ${{ github.event.inputs.target }}
+      - name: Build release binary
+        run: cargo build --release --target ${{ github.event.inputs.target }}
 
-    - name: Package binary
-      shell: bash
-      run: |
-        BINARY_NAME=$(cargo metadata --format-version 1 | jq -r '.packages[0].name')
-        if [[ "${{ github.event.inputs.target }}" == *"windows"* ]]; then
-          EXT=".exe"
-          BINARY_PATH="./target/${{ github.event.inputs.target }}/release/$BINARY_NAME$EXT"
-          ARTIFACT_NAME="binary-${{ github.event.inputs.target }}.zip"
-          zip -j $ARTIFACT_NAME $BINARY_PATH
-        else
-          EXT=""
-          BINARY_PATH="./target/${{ github.event.inputs.target }}/release/$BINARY_NAME"
-          ARTIFACT_NAME="binary-${{ github.event.inputs.target }}.tar.gz"
-          tar czf $ARTIFACT_NAME -C $(dirname $BINARY_PATH) $(basename $BINARY_PATH)
-        fi
-        echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
+      - name: Package binary
+        shell: bash
+        run: |
+          BINARY_NAME=$(cargo metadata --format-version 1 | jq -r '.packages[0].name')
+          if [[ "${{ github.event.inputs.target }}" == *"windows"* ]]; then
+            EXT=".exe"
+            BINARY_PATH="./target/${{ github.event.inputs.target }}/release/$BINARY_NAME$EXT"
+            ARTIFACT_NAME="binary-${{ github.event.inputs.target }}.zip"
+            zip -j $ARTIFACT_NAME $BINARY_PATH
+          else
+            EXT=""
+            BINARY_PATH="./target/${{ github.event.inputs.target }}/release/$BINARY_NAME"
+            ARTIFACT_NAME="binary-${{ github.event.inputs.target }}.tar.gz"
+            tar czf $ARTIFACT_NAME -C $(dirname $BINARY_PATH) $(basename $BINARY_PATH)
+          fi
+          echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.ARTIFACT_NAME }}
-        path: ${{ env.ARTIFACT_NAME }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.ARTIFACT_NAME }}
