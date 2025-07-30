@@ -47,8 +47,9 @@ impl Camera {
         let mut image_writer = ImageWriter::new(self.image_width, self.image_height);
 
         for y in 0..self.image_height {
+            let mut pixel = pixel00 + viewport_v_delta * (y as f64);
+
             for x in 0..self.image_width {
-                let pixel = pixel00 + viewport_u_delta * (x as f64) + viewport_v_delta * (y as f64);
                 let ray_direction = pixel - self.center;
                 let ray_direction_norm = ray_direction.unit_vec();
                 let primary_ray = Ray::new(self.center, ray_direction);
@@ -65,6 +66,8 @@ impl Camera {
                 };
 
                 image_writer.set_pixel_color_vec(x, y, &color);
+
+                pixel += viewport_u_delta;
             }
         }
 

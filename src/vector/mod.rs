@@ -127,6 +127,17 @@ where
     }
 }
 
+impl<Ty, const N: usize> AddAssign<Self> for Vector<Ty, N>
+where
+    Ty: AddAssign + Copy,
+{
+    fn add_assign(&mut self, rhs: Self) {
+        for i in 0..N {
+            self.data[i] += rhs.data[i];
+        }
+    }
+}
+
 impl<Ty, const N: usize> Sub<Self> for Vector<Ty, N>
 where
     Ty: Sub<Output = Ty> + Default + Copy,
@@ -163,7 +174,7 @@ where
 
 impl<Ty, const N: usize> MulAssign<Ty> for Vector<Ty, N>
 where
-    Ty: MulAssign + Default + Copy,
+    Ty: MulAssign + Copy,
 {
     fn mul_assign(&mut self, rhs: Ty) {
         for i in 0..N {
