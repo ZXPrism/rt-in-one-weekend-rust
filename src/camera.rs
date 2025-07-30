@@ -101,7 +101,7 @@ impl Camera {
             ]);
             let scatter_ray = Ray::new(hit_point, hit_info.normal + delta);
 
-            self.hit_test(&scatter_ray, scene, remaining_bounce - 1) * 0.7
+            self.hit_test(&scatter_ray, scene, remaining_bounce - 1) * 0.5
         } else {
             let mut t = primary_ray.direction.unit_vec()[1];
             t = (t + 1.0) * 0.5;
