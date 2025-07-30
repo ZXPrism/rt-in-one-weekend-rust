@@ -6,28 +6,31 @@ use crate::vector::Vector3d;
 pub struct Camera {
     image_width: usize,
     image_height: usize,
-
     center: Vector3d,
     viewport_width: f64,
     viewport_height: f64,
+    fov: f64,
     focal_length: f64,
 }
 
 impl Camera {
     pub fn new(
         image_width: usize,
-        viewport_width: f64,
+        fov: f64,
         aspect_ratio: f64,
         camera_center: Vector3d,
         focal_length: f64,
     ) -> Self {
-        let image_height = ((image_width as f64) / aspect_ratio) as usize;
+        let viewport_height = 2.0 * ((fov / 2.0).to_radians()).tan() * focal_length;
+        let viewport_width = viewport_height * aspect_ratio;
+
         Camera {
             image_width,
-            image_height,
+            image_height: ((image_width as f64) / aspect_ratio) as usize,
             center: camera_center,
             viewport_width,
-            viewport_height: ((viewport_width as f64) / aspect_ratio) as f64,
+            viewport_height,
+            fov,
             focal_length,
         }
     }
@@ -39,7 +42,7 @@ impl Camera {
         let viewport_v_delta = viewport_v / (self.image_height as f64);
         let viewport_upper_left = self.center + Vector3d::new([0.0, 0.0, self.focal_length])
             - (viewport_u + viewport_v) / 2.0;
-        let pixel00 = viewport_upper_left + (viewport_u_delta + viewport_v_delta) / 2.0;
+        let pixel00 = viewport_upper_left + (viewport_u_delta + viewport_v_delta) * 0.5;
 
         let mut image_writer = ImageWriter::new(self.image_width, self.image_height);
 
