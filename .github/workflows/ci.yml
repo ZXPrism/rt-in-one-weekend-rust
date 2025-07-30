@@ -1,0 +1,58 @@
+name: Build Rust Binary
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target platform'
+        required: true
+        type: choice
+        options:
+          - x86_64-unknown-linux-gnu
+          - x86_64-pc-windows-msvc
+          - x86_64-apple-darwin
+
+jobs:
+  build:
+    runs-on: ${{
+      contains(inputs.target, 'windows') && 'windows-latest' ||
+      contains(inputs.target, 'apple') && 'macos-latest' ||
+      'ubuntu-latest'
+    }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        target: ${{ github.event.inputs.target }}
+        profile: minimal
+
+    - name: Build release binary
+      run: cargo build --release --target ${{ github.event.inputs.target }}
+
+    - name: Package binary
+      shell: bash
+      run: |
+        # Determine binary name and extension
+        BINARY_NAME=$(cargo metadata --format-version 1 | jq -r '.packages[0].name')
+        if [[ "${{ github.event.inputs.target }}" == *"windows"* ]]; then
+          EXT=".exe"
+          BINARY_PATH="./target/${{ github.event.inputs.target }}/release/$BINARY_NAME$EXT"
+          ZIP_NAME="binary-${{ github.event.inputs.target }}.zip"
+          zip -j $ZIP_NAME $BINARY_PATH
+        else
+          EXT=""
+          BINARY_PATH="./target/${{ github.event.inputs.target }}/release/$BINARY_NAME"
+          TAR_NAME="binary-${{ github.event.inputs.target }}.tar.gz"
+          tar czf $TAR_NAME -C $(dirname $BINARY_PATH) $(basename $BINARY_PATH)
+        fi
+        echo "ARTIFACT_NAME=${ZIP_NAME:-$TAR_NAME}" >> $GITHUB_ENV
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.ARTIFACT_NAME }}
+        path: ${{ env.ARTIFACT_NAME }}
