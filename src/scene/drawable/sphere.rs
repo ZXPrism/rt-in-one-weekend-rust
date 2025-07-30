@@ -1,7 +1,42 @@
+use crate::vector::Vector3d;
+
 use super::*;
 
-pub struct Sphere {}
+pub struct Sphere {
+    center: Vector3d,
+    radius: f64,
+}
+
+impl Sphere {
+    pub fn new(center: Vector3d, radius: f64) -> Sphere {
+        Sphere { center, radius }
+    }
+}
 
 impl Drawable for Sphere {
-    fn draw(&self) {}
+    fn hit_test(&self, ray: &Ray) -> HitInfo {
+        let mut res_hit_info = HitInfo::default();
+
+        let origin_vec = self.center - ray.origin;
+        let a = Vector3d::dot_product(ray.direction, ray.direction);
+        let b = -2.0 * Vector3d::dot_product(ray.direction, origin_vec);
+        let c = Vector3d::dot_product(origin_vec, origin_vec) - self.radius * self.radius;
+
+        let det = b * b - 4.0 * a * c;
+        if det >= 0.0 {
+            let det_sqrt = det.sqrt();
+            let t1 = (-b - det_sqrt) / (2.0 * a);
+            let t2 = (-b + det_sqrt) / (2.0 * a);
+
+            if t1 >= 0.0 {
+                res_hit_info.if_hit = true;
+                res_hit_info.t = t1;
+            } else if t2 >= 0.0 {
+                res_hit_info.if_hit = true;
+                res_hit_info.t = t2;
+            }
+        }
+
+        res_hit_info
+    }
 }

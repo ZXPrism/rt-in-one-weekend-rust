@@ -1,6 +1,6 @@
 use crate::ImageWriter;
-use crate::ray::{self, Ray};
-use crate::scene::{self, Scene};
+use crate::ray::Ray;
+use crate::scene::Scene;
 use crate::vector::Vector3d;
 
 pub struct Camera {
@@ -41,7 +41,7 @@ impl Camera {
         let viewport_v_delta = viewport_v / (self.image_height as f64);
         let viewport_upper_left = self.center + Vector3d::new([0.0, 0.0, self.focal_length])
             - (viewport_u + viewport_v) / 2.0;
-        let pixel00 = viewport_upper_left - (viewport_u_delta + viewport_v_delta) / 2.0;
+        let pixel00 = viewport_upper_left + (viewport_u_delta + viewport_v_delta) / 2.0;
 
         let mut image_writer = ImageWriter::new(self.image_width, self.image_height);
 
@@ -52,11 +52,17 @@ impl Camera {
                 let ray_direction_norm = ray_direction.unit_vec();
                 let primary_ray = Ray::new(self.center, ray_direction);
 
+                let hit_info = scene.hit_test(&primary_ray);
+
                 let mut t = ray_direction_norm[1];
                 t = (t + 1.0) * 0.5;
 
-                let color =
-                    Vector3d::new([1.0, 1.0, 1.0]) * (1.0 - t) + Vector3d::new([0.5, 0.7, 1.0]) * t;
+                let color = if hit_info.if_hit {
+                    Vector3d::new([1.0, 0.0, 0.0])
+                } else {
+                    Vector3d::new([1.0, 1.0, 1.0]) * (1.0 - t) + Vector3d::new([0.5, 0.7, 1.0]) * t
+                };
+
                 image_writer.set_pixel_color_vec(x, y, &color);
             }
         }
