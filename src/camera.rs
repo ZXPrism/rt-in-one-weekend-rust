@@ -89,6 +89,6 @@ impl Camera {
             }
         }
 
-        image_writer.write_to_stdout();
+        image_writer.write_to_file();
     }
 }
