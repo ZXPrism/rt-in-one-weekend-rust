@@ -6,11 +6,9 @@ use crate::vector::Vector3d;
 pub struct Camera {
     image_width: usize,
     image_height: usize,
-    center: Vector3d,
-    viewport_width: f64,
-    viewport_height: f64,
+    camera_center: Vector3d,
+    gaze_center: Vector3d,
     fov: f64,
-    focal_length: f64,
 }
 
 impl Camera {
@@ -19,29 +17,32 @@ impl Camera {
         fov: f64,
         aspect_ratio: f64,
         camera_center: Vector3d,
-        focal_length: f64,
+        gaze_center: Vector3d,
     ) -> Self {
-        let viewport_height = 2.0 * ((fov / 2.0).to_radians()).tan() * focal_length;
-        let viewport_width = viewport_height * aspect_ratio;
-
         Camera {
             image_width,
             image_height: ((image_width as f64) / aspect_ratio) as usize,
-            center: camera_center,
-            viewport_width,
-            viewport_height,
+            camera_center,
+            gaze_center,
             fov,
-            focal_length,
         }
     }
 
     pub fn render(&self, scene: &Scene) {
-        let viewport_u = Vector3d::new([self.viewport_width, 0.0, 0.0]);
-        let viewport_v = Vector3d::new([0.0, -self.viewport_height, 0.0]);
+        let camera_gaze = self.gaze_center - self.camera_center;
+        let camera_right = Vector3d::cross_product(camera_gaze, Vector3d::new([0.0, 1.0, 0.0]));
+        let camera_down = Vector3d::cross_product(camera_gaze, camera_right);
+
+        let focal_length = camera_gaze.length();
+        let viewport_height = 2.0 * (self.fov / 2.0).to_radians().tan() * focal_length;
+        let viewport_width =
+            viewport_height * ((self.image_width as f64) / (self.image_height as f64));
+
+        let viewport_u = camera_right.unit_vec() * viewport_width;
+        let viewport_v = camera_down.unit_vec() * viewport_height;
         let viewport_u_delta = viewport_u / (self.image_width as f64);
         let viewport_v_delta = viewport_v / (self.image_height as f64);
-        let viewport_upper_left = self.center + Vector3d::new([0.0, 0.0, self.focal_length])
-            - (viewport_u + viewport_v) / 2.0;
+        let viewport_upper_left = self.gaze_center - (viewport_u + viewport_v) / 2.0;
         let pixel00 = viewport_upper_left + (viewport_u_delta + viewport_v_delta) * 0.5;
 
         let mut image_writer = ImageWriter::new(self.image_width, self.image_height);
@@ -50,9 +51,9 @@ impl Camera {
             let mut pixel = pixel00 + viewport_v_delta * (y as f64);
 
             for x in 0..self.image_width {
-                let ray_direction = pixel - self.center;
+                let ray_direction = pixel - self.camera_center;
                 let ray_direction_norm = ray_direction.unit_vec();
-                let primary_ray = Ray::new(self.center, ray_direction);
+                let primary_ray = Ray::new(self.camera_center, ray_direction);
 
                 let hit_info = scene.hit_test(&primary_ray);
 
