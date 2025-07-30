@@ -6,7 +6,6 @@ use crate::vector::Vector3d;
 pub struct Camera {
     image_width: usize,
     image_height: usize,
-    aspect_ratio: f64,
 
     center: Vector3d,
     viewport_width: f64,
@@ -26,7 +25,6 @@ impl Camera {
         Camera {
             image_width,
             image_height,
-            aspect_ratio,
             center: camera_center,
             viewport_width,
             viewport_height: ((viewport_width as f64) / aspect_ratio) as f64,
