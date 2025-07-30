@@ -1,3 +1,5 @@
+use rand::Rng;
+
 use crate::ImageWriter;
 use crate::ray::Ray;
 use crate::scene::Scene;
@@ -9,6 +11,7 @@ pub struct Camera {
     camera_center: Vector3d,
     gaze_center: Vector3d,
     fov: f64,
+    sample_cnt: usize,
 }
 
 impl Camera {
@@ -18,6 +21,7 @@ impl Camera {
         aspect_ratio: f64,
         camera_center: Vector3d,
         gaze_center: Vector3d,
+        sample_cnt: usize,
     ) -> Self {
         Camera {
             image_width,
@@ -25,6 +29,7 @@ impl Camera {
             camera_center,
             gaze_center,
             fov,
+            sample_cnt,
         }
     }
 
@@ -46,27 +51,38 @@ impl Camera {
         let pixel00 = viewport_upper_left + (viewport_u_delta + viewport_v_delta) * 0.5;
 
         let mut image_writer = ImageWriter::new(self.image_width, self.image_height);
+        let mut rng = rand::rng();
 
         for y in 0..self.image_height {
             let mut pixel = pixel00 + viewport_v_delta * (y as f64);
 
             for x in 0..self.image_width {
-                let ray_direction = pixel - self.camera_center;
-                let ray_direction_norm = ray_direction.unit_vec();
-                let primary_ray = Ray::new(self.camera_center, ray_direction);
+                let mut color = Vector3d::zeros();
 
-                let hit_info = scene.hit_test(&primary_ray);
+                for _ in 0..self.sample_cnt {
+                    let sample_pixel = pixel
+                        + viewport_u_delta * rng.random_range(-0.5..=0.5)
+                        + viewport_v_delta * rng.random_range(-0.5..=0.5);
 
-                let mut t = ray_direction_norm[1];
-                t = (t + 1.0) * 0.5;
+                    let ray_direction = sample_pixel - self.camera_center;
+                    let ray_direction_norm = ray_direction.unit_vec();
+                    let primary_ray = Ray::new(self.camera_center, ray_direction);
 
-                let color = if hit_info.if_hit {
-                    let kd = Vector3d::dot_product(hit_info.normal, ray_direction_norm);
-                    Vector3d::new([kd.abs(), kd.abs(), kd.abs()])
-                } else {
-                    Vector3d::new([1.0, 1.0, 1.0]) * (1.0 - t) + Vector3d::new([0.5, 0.7, 1.0]) * t
-                };
+                    let hit_info = scene.hit_test(&primary_ray);
 
+                    let mut t = ray_direction_norm[1];
+                    t = (t + 1.0) * 0.5;
+
+                    if hit_info.if_hit {
+                        let kd = Vector3d::dot_product(hit_info.normal, ray_direction_norm);
+                        color += Vector3d::new([kd.abs(), kd.abs(), kd.abs()])
+                    } else {
+                        color += Vector3d::new([1.0, 1.0, 1.0]) * (1.0 - t)
+                            + Vector3d::new([0.5, 0.7, 1.0]) * t;
+                    }
+                }
+
+                color /= self.sample_cnt as f64;
                 image_writer.set_pixel_color_vec(x, y, &color);
 
                 pixel += viewport_u_delta;
