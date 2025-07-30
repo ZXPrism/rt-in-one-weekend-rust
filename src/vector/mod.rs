@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Div, Index, IndexMut, Mul, MulAssign, Sub};
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Sub};
 
 pub mod alias;
 pub use alias::*;
@@ -197,5 +197,16 @@ where
         }
 
         res
+    }
+}
+
+impl<Ty, const N: usize> DivAssign<Ty> for Vector<Ty, N>
+where
+    Ty: DivAssign + Copy,
+{
+    fn div_assign(&mut self, rhs: Ty) {
+        for i in 0..N {
+            self.data[i] /= rhs;
+        }
     }
 }
