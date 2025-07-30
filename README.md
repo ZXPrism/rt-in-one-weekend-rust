@@ -16,3 +16,7 @@ Clone this repo, and run `cargo run --release`, wait for a while, then you will 
     - [ ] Optimize using compute shaders (using [wgpu](https://github.com/gfx-rs/wgpu))
 - [ ] Implement Book II (TBD)
 - [ ] Implement Book III (TBD)
+
+## Confusion
+- At commit `7b6a782ab9035127a860fb88cb3aa15cc1feca83`, file `camera.rs`, ln 95 (2025-07-30)
+    - Why Lambertian reflection can be realized through adding a random vector on a sphere to the surface normal?
