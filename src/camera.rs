@@ -92,18 +92,14 @@ impl Camera {
 
         let hit_info = scene.hit_test(&primary_ray);
         if hit_info.if_hit {
-            // scatter light randomly in a semi-sphere using a rejection method
+            // Lambertian reflection (why? need math proof...)
             let hit_point = primary_ray.at(hit_info.t);
-            let scatter_ray = loop {
-                let test_scatter_ray = Vector3d::new([
-                    rng.random_range(-1.0..=1.0),
-                    rng.random_range(-1.0..=1.0),
-                    rng.random_range(-1.0..=1.0),
-                ]);
-                if Vector3d::dot_product(test_scatter_ray, hit_info.normal) >= 0.0 {
-                    break Ray::new(hit_point, test_scatter_ray);
-                }
-            };
+            let delta = Vector3d::new([
+                rng.random_range(-1.0..=1.0),
+                rng.random_range(-1.0..=1.0),
+                rng.random_range(-1.0..=1.0),
+            ]);
+            let scatter_ray = Ray::new(hit_point, hit_info.normal + delta);
 
             self.hit_test(&scatter_ray, scene, remaining_bounce - 1) * 0.7
         } else {
