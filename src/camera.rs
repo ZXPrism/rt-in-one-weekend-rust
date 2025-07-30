@@ -1,5 +1,6 @@
 use crate::ImageWriter;
 use crate::ray::{self, Ray};
+use crate::scene::{self, Scene};
 use crate::vector::Vector3d;
 
 pub struct Camera {
@@ -33,7 +34,7 @@ impl Camera {
         }
     }
 
-    pub fn render(&self) {
+    pub fn render(&self, scene: &Scene) {
         let viewport_u = Vector3d::new([self.viewport_width, 0.0, 0.0]);
         let viewport_v = Vector3d::new([0.0, -self.viewport_height, 0.0]);
         let viewport_u_delta = viewport_u / (self.image_width as f64);
