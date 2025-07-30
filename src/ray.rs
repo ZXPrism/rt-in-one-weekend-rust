@@ -1,12 +1,16 @@
 use crate::vector::*;
 
 pub struct Ray {
-    pub origin: Vector3f,
-    pub direction: Vector3f,
+    pub origin: Vector3d,
+    pub direction: Vector3d,
 }
 
 impl Ray {
-    pub fn at(&self, t: f32) -> Vector3f {
+    pub fn new(origin: Vector3d, direction: Vector3d) -> Ray {
+        Ray { origin, direction }
+    }
+
+    pub fn at(&self, t: f64) -> Vector3d {
         self.origin + self.direction * t
     }
 }
