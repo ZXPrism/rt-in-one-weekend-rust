@@ -16,7 +16,7 @@ fn main() {
 
     let mut main_scene = Scene::new();
 
-    main_scene.add_object(Box::new(Sphere::new(Vector3d::new([0.0, 0.0, 2.0]), 0.5)));
+    main_scene.add_object(Box::new(Sphere::new(Vector3d::new([0.0, 0.0, 1.0]), 0.5)));
 
     main_camera.render(&main_scene);
 }

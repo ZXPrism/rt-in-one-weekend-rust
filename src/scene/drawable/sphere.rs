@@ -35,6 +35,11 @@ impl Drawable for Sphere {
                 res_hit_info.if_hit = true;
                 res_hit_info.t = t2;
             }
+
+            if res_hit_info.if_hit {
+                res_hit_info.normal = ray.at(res_hit_info.t) - self.center;
+                res_hit_info.normal /= self.radius;
+            }
         }
 
         res_hit_info

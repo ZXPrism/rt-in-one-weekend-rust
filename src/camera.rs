@@ -60,7 +60,8 @@ impl Camera {
                 t = (t + 1.0) * 0.5;
 
                 let color = if hit_info.if_hit {
-                    Vector3d::new([1.0, 0.0, 0.0])
+                    let kd = Vector3d::dot_product(hit_info.normal, ray_direction_norm);
+                    Vector3d::new([kd.abs(), kd.abs(), kd.abs()])
                 } else {
                     Vector3d::new([1.0, 1.0, 1.0]) * (1.0 - t) + Vector3d::new([0.5, 0.7, 1.0]) * t
                 };

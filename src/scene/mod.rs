@@ -4,7 +4,7 @@ use std::cmp;
 
 use drawable::*;
 
-use crate::ray::Ray;
+use crate::{ray::Ray, vector::Vector3d};
 
 pub struct Scene {
     objects: Vec<Box<dyn Drawable>>,
@@ -13,6 +13,7 @@ pub struct Scene {
 pub struct HitInfo {
     pub if_hit: bool,
     pub t: f64,
+    pub normal: Vector3d, // NOTE: should be normalized to a unit vector
 }
 
 impl Default for HitInfo {
@@ -20,6 +21,7 @@ impl Default for HitInfo {
         HitInfo {
             if_hit: false,
             t: f64::INFINITY,
+            normal: Vector3d::zeros(),
         }
     }
 }
@@ -42,6 +44,7 @@ impl Scene {
                 res_hit_info.if_hit = true;
                 if hit_info.t < res_hit_info.t {
                     res_hit_info.t = hit_info.t;
+                    res_hit_info.normal = hit_info.normal;
                 }
             }
         }
