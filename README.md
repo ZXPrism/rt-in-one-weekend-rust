@@ -20,3 +20,6 @@ Clone this repo, and run `cargo run --release`, wait for a while, then you will 
 ## Confusion
 - At commit `7b6a782ab9035127a860fb88cb3aa15cc1feca83`, file `camera.rs`, ln 95 (2025-07-30)
     - Why Lambertian reflection can be realized through adding a random vector on a sphere to the surface normal?
+
+- At commit `28854e86ee7bc57f3cd34ba1027419818c5e7c76`, file `image_writer.rs`, ln 20 (2025-07-30)
+    - Why the inverse of "gamma 2" is just a square root?
