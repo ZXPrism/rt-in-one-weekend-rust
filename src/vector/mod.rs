@@ -19,7 +19,7 @@ impl Sqrt for f64 {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct Vector<Ty, const N: usize> {
     data: [Ty; N],
 }
@@ -48,7 +48,7 @@ impl<Ty, const N: usize> Vector<Ty, N>
 where
     Ty: Default + Copy + Mul<Output = Ty> + AddAssign,
 {
-    pub fn dot_product(lhs: &Vector<Ty, N>, rhs: &Vector<Ty, N>) -> Ty {
+    pub fn dot_product(lhs: Vector<Ty, N>, rhs: Vector<Ty, N>) -> Ty {
         let mut res = Ty::default();
 
         for i in 0..N {
@@ -63,7 +63,7 @@ impl<Ty> Vector<Ty, 3>
 where
     Ty: Copy + Mul<Output = Ty> + Sub<Output = Ty>,
 {
-    pub fn cross_product(lhs: &Vector<Ty, 3>, rhs: &Vector<Ty, 3>) -> Vector<Ty, 3> {
+    pub fn cross_product(lhs: Vector<Ty, 3>, rhs: Vector<Ty, 3>) -> Vector<Ty, 3> {
         Vector::new([
             lhs.data[1] * rhs.data[2] - lhs.data[2] * rhs.data[1],
             lhs.data[2] * rhs.data[0] - lhs.data[0] * rhs.data[2],
@@ -76,7 +76,7 @@ impl<Ty, const N: usize> Vector<Ty, N>
 where
     Ty: Default + Copy + Mul<Output = Ty> + AddAssign + Sqrt,
 {
-    pub fn length(&self) -> Ty {
+    pub fn length(self) -> Ty {
         let mut res = Ty::default();
 
         for i in 0..N {
@@ -91,7 +91,7 @@ impl<Ty, const N: usize> Vector<Ty, N>
 where
     Ty: Default + Copy + Mul<Output = Ty> + Div<Output = Ty> + AddAssign + Sqrt,
 {
-    pub fn unit_vec(&self) -> Self {
+    pub fn unit_vec(self) -> Self {
         self / Vector::length(self) // may divide by zero
     }
 }
@@ -110,7 +110,7 @@ impl<Ty, const N: usize> IndexMut<usize> for Vector<Ty, N> {
     }
 }
 
-impl<Ty, const N: usize> Add<Self> for &Vector<Ty, N>
+impl<Ty, const N: usize> Add<Self> for Vector<Ty, N>
 where
     Ty: Add<Output = Ty> + Default + Copy,
 {
@@ -127,7 +127,7 @@ where
     }
 }
 
-impl<Ty, const N: usize> Sub<Self> for &Vector<Ty, N>
+impl<Ty, const N: usize> Sub<Self> for Vector<Ty, N>
 where
     Ty: Sub<Output = Ty> + Default + Copy,
 {
@@ -144,7 +144,7 @@ where
     }
 }
 
-impl<Ty, const N: usize> Mul<Ty> for &Vector<Ty, N>
+impl<Ty, const N: usize> Mul<Ty> for Vector<Ty, N>
 where
     Ty: Mul<Output = Ty> + Default + Copy,
 {
@@ -172,7 +172,7 @@ where
     }
 }
 
-impl<Ty, const N: usize> Div<Ty> for &Vector<Ty, N>
+impl<Ty, const N: usize> Div<Ty> for Vector<Ty, N>
 where
     Ty: Div<Output = Ty> + Default + Copy,
 {
