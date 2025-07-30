@@ -3,7 +3,7 @@ use rand::Rng;
 use crate::ImageWriter;
 use crate::ray::Ray;
 use crate::scene::Scene;
-use crate::vector::Vector3d;
+use crate::vector::{Color, Vector3d};
 
 pub struct Camera {
     image_width: usize,
@@ -12,6 +12,7 @@ pub struct Camera {
     gaze_center: Vector3d,
     fov: f64,
     sample_cnt: usize,
+    max_bounce: usize,
 }
 
 impl Camera {
@@ -22,6 +23,7 @@ impl Camera {
         camera_center: Vector3d,
         gaze_center: Vector3d,
         sample_cnt: usize,
+        max_bounce: usize,
     ) -> Self {
         Camera {
             image_width,
@@ -30,6 +32,7 @@ impl Camera {
             gaze_center,
             fov,
             sample_cnt,
+            max_bounce,
         }
     }
 
@@ -64,22 +67,10 @@ impl Camera {
                         + viewport_u_delta * rng.random_range(-0.5..=0.5)
                         + viewport_v_delta * rng.random_range(-0.5..=0.5);
 
-                    let ray_direction = sample_pixel - self.camera_center;
-                    let ray_direction_norm = ray_direction.unit_vec();
-                    let primary_ray = Ray::new(self.camera_center, ray_direction);
+                    let primary_ray =
+                        Ray::new(self.camera_center, sample_pixel - self.camera_center);
 
-                    let hit_info = scene.hit_test(&primary_ray);
-
-                    let mut t = ray_direction_norm[1];
-                    t = (t + 1.0) * 0.5;
-
-                    if hit_info.if_hit {
-                        let kd = Vector3d::dot_product(hit_info.normal, ray_direction_norm);
-                        color += Vector3d::new([kd.abs(), kd.abs(), kd.abs()])
-                    } else {
-                        color += Vector3d::new([1.0, 1.0, 1.0]) * (1.0 - t)
-                            + Vector3d::new([0.5, 0.7, 1.0]) * t;
-                    }
+                    color += self.hit_test(&primary_ray, scene, self.max_bounce);
                 }
 
                 color /= self.sample_cnt as f64;
@@ -90,5 +81,35 @@ impl Camera {
         }
 
         image_writer.write_to_file();
+    }
+
+    fn hit_test(&self, primary_ray: &Ray, scene: &Scene, remaining_bounce: usize) -> Color {
+        if remaining_bounce == 0 {
+            return Color::zeros();
+        }
+
+        let mut rng = rand::rng();
+
+        let hit_info = scene.hit_test(&primary_ray);
+        if hit_info.if_hit {
+            // scatter light randomly in a semi-sphere using a rejection method
+            let hit_point = primary_ray.at(hit_info.t);
+            let scatter_ray = loop {
+                let test_scatter_ray = Vector3d::new([
+                    rng.random_range(-1.0..=1.0),
+                    rng.random_range(-1.0..=1.0),
+                    rng.random_range(-1.0..=1.0),
+                ]);
+                if Vector3d::dot_product(test_scatter_ray, hit_info.normal) >= 0.0 {
+                    break Ray::new(hit_point, test_scatter_ray);
+                }
+            };
+
+            self.hit_test(&scatter_ray, scene, remaining_bounce - 1) * 0.7
+        } else {
+            let mut t = primary_ray.direction.unit_vec()[1];
+            t = (t + 1.0) * 0.5;
+            Color::new([1.0, 1.0, 1.0]) * (1.0 - t) + Color::new([0.5, 0.7, 1.0]) * t
+        }
     }
 }

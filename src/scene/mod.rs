@@ -40,7 +40,7 @@ impl Scene {
 
         for obj in &self.objects {
             let hit_info = obj.hit_test(ray);
-            if hit_info.if_hit {
+            if hit_info.if_hit && hit_info.t > 0.00001 {
                 res_hit_info.if_hit = true;
                 if hit_info.t < res_hit_info.t {
                     res_hit_info.t = hit_info.t;
