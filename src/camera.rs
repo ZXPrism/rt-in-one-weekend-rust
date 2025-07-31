@@ -13,6 +13,10 @@ pub struct Camera {
     fov: f64,
     sample_cnt: usize,
     max_bounce: usize,
+
+    // depth-of-field settings
+    defocus_angle: f64,
+    focus_dist: f64,
 }
 
 impl Camera {
@@ -24,6 +28,8 @@ impl Camera {
         gaze_center: Vector3d, // NOTE: not near plane! just a helper plane to delineate the frustum
         sample_cnt: usize,
         max_bounce: usize,
+        defocus_angle: f64,
+        focus_dist: f64,
     ) -> Self {
         Camera {
             image_width,
@@ -33,16 +39,22 @@ impl Camera {
             fov,
             sample_cnt,
             max_bounce,
+            defocus_angle,
+            focus_dist,
         }
     }
 
     pub fn render(&self, scene: &Scene) {
         let camera_gaze = self.gaze_center - self.camera_center;
-        let camera_right = Vector3d::cross_product(camera_gaze, Vector3d::new([0.0, 1.0, 0.0]));
-        let camera_down = Vector3d::cross_product(camera_gaze, camera_right);
+        let camera_gaze_norm = camera_gaze.unit_vec();
 
-        let focal_length = camera_gaze.length();
-        let viewport_height = 2.0 * (self.fov / 2.0).to_radians().tan() * focal_length;
+        let camera_right = Vector3d::cross_product(camera_gaze, Vector3d::new([0.0, 1.0, 0.0]));
+        let camera_right_norm = camera_right.unit_vec();
+
+        let camera_down = Vector3d::cross_product(camera_gaze, camera_right);
+        let camera_down_norm = camera_down.unit_vec();
+
+        let viewport_height = 2.0 * (self.fov / 2.0).to_radians().tan() * self.focus_dist;
         let viewport_width =
             viewport_height * ((self.image_width as f64) / (self.image_height as f64));
 
@@ -50,8 +62,13 @@ impl Camera {
         let viewport_v = camera_down.unit_vec() * viewport_height;
         let viewport_u_delta = viewport_u / (self.image_width as f64);
         let viewport_v_delta = viewport_v / (self.image_height as f64);
-        let viewport_upper_left = self.gaze_center - (viewport_u + viewport_v) / 2.0;
+        let viewport_upper_left = self.camera_center + camera_gaze_norm * self.focus_dist
+            - (viewport_u + viewport_v) / 2.0;
         let pixel00 = viewport_upper_left + (viewport_u_delta + viewport_v_delta) * 0.5;
+
+        let defocus_radius = (self.defocus_angle / 2.0).to_radians().tan() * self.focus_dist;
+        let defocus_disk_u = camera_right_norm * defocus_radius;
+        let defocus_disk_v = camera_down_norm * defocus_radius;
 
         let mut image_writer = ImageWriter::new(self.image_width, self.image_height);
         let mut rng = rand::rng();
@@ -67,8 +84,12 @@ impl Camera {
                         + viewport_u_delta * rng.random_range(-0.5..=0.5)
                         + viewport_v_delta * rng.random_range(-0.5..=0.5);
 
-                    let primary_ray =
-                        Ray::new(self.camera_center, sample_pixel - self.camera_center);
+                    let random_disk = Vector3d::random_unit_disk();
+                    let defocus_origin = self.camera_center
+                        + defocus_disk_u * random_disk[0]
+                        + defocus_disk_v * random_disk[1];
+
+                    let primary_ray = Ray::new(defocus_origin, sample_pixel - self.camera_center);
 
                     color += self.hit_test(&primary_ray, scene, self.max_bounce);
                 }
