@@ -1,5 +1,4 @@
 use super::*;
-use rand::Rng;
 
 pub struct DiffuseMaterial {
     albedo: Color,
