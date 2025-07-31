@@ -31,7 +31,7 @@ Camera <-> Scene <-> Drawable <-> Material
 ## TODO
 - [ ] Implement Book I
     - [X] Basics (pure on CPU)
-    - [ ] Optimize using multi-threading
+    - [X] Optimize using multi-threading
     - [ ] Optimize using compute shaders (using [wgpu](https://github.com/gfx-rs/wgpu))
 - [ ] Implement Book II (TBD)
 - [ ] Implement Book III (TBD)
