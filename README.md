@@ -7,7 +7,8 @@ I made this mainly for learning Rust, since I believe that the best way to learn
 As for the reason of choosing to do a ray tracer...That's because, it is fun and romantic!
 
 ## Getting Started
-Clone this repo, and run `cargo run --release`, wait for a while, then you will find the output `out.png` at the root folder.
+- Install [rustup](https://rustup.rs/)
+- Clone this repo, and run `cargo run --release`, wait for a while, then you will find the output `out.png` at the root folder.
 
 ## TODO
 - [ ] Implement Book I
