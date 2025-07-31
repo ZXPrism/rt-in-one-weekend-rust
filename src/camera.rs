@@ -26,7 +26,7 @@ impl Camera {
         fov: f64,
         aspect_ratio: f64,
         camera_center: Vector3d,
-        gaze_center: Vector3d, // NOTE: not near plane! just a helper plane to delineate the frustum
+        gaze_center: Vector3d,
         sample_cnt: usize,
         max_bounce: usize,
         defocus_angle: f64,
