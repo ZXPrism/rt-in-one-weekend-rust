@@ -5,7 +5,6 @@ mod scene;
 mod vector;
 
 use rand::Rng;
-use std::rc::Rc;
 
 use image_writer::*;
 use scene::*;
@@ -22,11 +21,11 @@ use crate::scene::{
 fn main() {
     let main_camera = camera::Camera::new(
         1920,
-        90.0,
+        50.0,
         16.0 / 9.0,
-        Vector3d::new([0.0, 1.5, -1.3]),
-        Vector3d::new([0.0, 0.4, 0.0]),
-        256,
+        Vector3d::new([0.0, 1.2, -1.3]),
+        Vector3d::new([0.0, 0.9, 0.0]),
+        512,
         64,
         0.0,
         1.0,
@@ -34,7 +33,7 @@ fn main() {
 
     let mut main_scene = Scene::new();
 
-    let diffuse_ground = Box::new(DiffuseMaterial::new(Color::new([0.3, 0.3, 0.3])));
+    let diffuse_ground = Box::new(DiffuseMaterial::new(Color::new([0.2, 0.2, 0.2])));
 
     main_scene.add_object(Box::new(Sphere::new(
         Vector3d::new([0.0, -1000.0, 1.0]),
