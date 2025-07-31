@@ -1,3 +1,4 @@
+use rand::Rng;
 use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Sub};
 
 pub mod alias;
@@ -41,6 +42,21 @@ where
         Vector {
             data: [Ty::default(); N],
         }
+    }
+}
+
+impl<const N: usize> Vector<f64, N> {
+    /// here `unit` means each element lies in [-1, 1]
+    /// doesn't mean the vector itself is a unit vector!
+    pub fn random_unit_vector() -> Self {
+        let mut rng = rand::rng();
+        let mut res = Self::zeros();
+
+        for i in 0..N {
+            res[i] = rng.random_range(-1.0..=1.0);
+        }
+
+        res
     }
 }
 
