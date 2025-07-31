@@ -45,15 +45,26 @@ where
     }
 }
 
-impl<const N: usize> Vector<f64, N> {
-    /// here `unit` means the vector lies in a unit sphere
-    /// doesn't mean the vector itself is a unit vector!
-    pub fn random_unit_vector() -> Self {
+impl Vector<f64, 3> {
+    pub fn random_unit_disk() -> Self {
         let mut rng = rand::rng();
         let mut res = Self::zeros();
 
         loop {
-            for i in 0..N {
+            res[0] = rng.random_range(-1.0..=1.0);
+            res[1] = rng.random_range(-1.0..=1.0);
+            if res.length_squared() <= 1.0 {
+                break res;
+            }
+        }
+    }
+
+    pub fn random_unit_sphere() -> Self {
+        let mut rng = rand::rng();
+        let mut res = Self::zeros();
+
+        loop {
+            for i in 0..3 {
                 res[i] = rng.random_range(-1.0..=1.0);
             }
             if res.length_squared() <= 1.0 {

@@ -19,7 +19,7 @@ impl Material for MetalMaterial {
         hit_info.scatter_ray.origin = hit_point;
 
         let mut reflected = Vector3d::reflect(ray_in.direction, hit_info.normal);
-        reflected = reflected.unit_vec() + Vector3d::random_unit_vector() * self.fuzz;
+        reflected = reflected.unit_vec() + Vector3d::random_unit_sphere() * self.fuzz;
 
         if Vector3d::dot_product(reflected, hit_info.normal) <= 0.0 {
             return false;

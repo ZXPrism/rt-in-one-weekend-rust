@@ -13,7 +13,7 @@ impl DiffuseMaterial {
 impl Material for DiffuseMaterial {
     fn scatter(&self, ray_in: &Ray, hit_info: &mut HitInfo) -> bool {
         let hit_point = ray_in.at(hit_info.t);
-        let delta = Vector3d::random_unit_vector();
+        let delta = Vector3d::random_unit_sphere();
 
         hit_info.albedo = self.albedo;
         hit_info.scatter_ray = Ray::new(hit_point, hit_info.normal + delta);
