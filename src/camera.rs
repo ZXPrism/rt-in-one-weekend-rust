@@ -76,11 +76,11 @@ impl Camera {
         let pixels: Vec<(usize, usize, Color)> = (0..self.image_height)
             .into_par_iter()
             .flat_map(|y| {
-                let mut rng = rand::rng();
+                let mut rng: rand::prelude::ThreadRng = rand::rng();
                 let mut pixel = pixel00 + viewport_v_delta * (y as f64);
 
                 (0..self.image_width)
-                    .map(move |x| {
+                    .map(|x| {
                         let mut color = Vector3d::zeros();
 
                         for _ in 0..self.sample_cnt {
