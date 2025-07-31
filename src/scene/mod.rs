@@ -41,13 +41,23 @@ impl Scene {
     pub fn hit_test(&self, ray: &Ray) -> HitInfo {
         let mut res_hit_info = HitInfo::default();
 
-        for obj in &self.objects {
+        let n = self.objects.len();
+        let mut hit_obj_idx = n;
+        for i in 0..n {
+            let obj = &self.objects[i];
+
             let hit_info = obj.hit_test(ray);
             if hit_info.if_hit && hit_info.t > 0.00001 {
                 if hit_info.t < res_hit_info.t {
-                    res_hit_info = hit_info;
+                    res_hit_info.t = hit_info.t;
+                    hit_obj_idx = i;
                 }
             }
+        }
+
+        if hit_obj_idx != n {
+            res_hit_info.if_hit = true;
+            self.objects[hit_obj_idx].fill_info(ray, &mut res_hit_info);
         }
 
         res_hit_info

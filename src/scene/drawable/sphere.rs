@@ -42,14 +42,14 @@ impl Drawable for Sphere {
                 res_hit_info.if_hit = true;
                 res_hit_info.t = t2;
             }
-
-            if res_hit_info.if_hit {
-                res_hit_info.normal = ray.at(res_hit_info.t) - self.center;
-                res_hit_info.normal /= self.radius;
-                self.material.scatter(ray, &mut res_hit_info);
-            }
         }
 
         res_hit_info
+    }
+
+    fn fill_info(&self, ray: &Ray, hit_info: &mut HitInfo) {
+        hit_info.normal = ray.at(hit_info.t) - self.center;
+        hit_info.normal /= self.radius;
+        self.material.scatter(ray, hit_info);
     }
 }
