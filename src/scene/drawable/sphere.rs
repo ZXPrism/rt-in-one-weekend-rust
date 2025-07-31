@@ -48,6 +48,7 @@ impl Drawable for Sphere {
     }
 
     fn fill_info(&self, ray: &Ray, hit_info: &mut HitInfo) {
+        hit_info.if_hit = true;
         hit_info.normal = ray.at(hit_info.t) - self.center;
         hit_info.normal /= self.radius;
         self.material.scatter(ray, hit_info);

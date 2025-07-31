@@ -56,7 +56,6 @@ impl Scene {
         }
 
         if hit_obj_idx != n {
-            res_hit_info.if_hit = true;
             self.objects[hit_obj_idx].fill_info(ray, &mut res_hit_info);
         }
 
