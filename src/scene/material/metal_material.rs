@@ -18,8 +18,7 @@ impl Material for MetalMaterial {
         hit_info.albedo = self.albedo;
         hit_info.scatter_ray.origin = hit_point;
 
-        let mut reflected = ray_in.direction
-            - hit_info.normal * 2.0 * Vector3d::dot_product(ray_in.direction, hit_info.normal);
+        let mut reflected = Vector3d::reflect(ray_in.direction, hit_info.normal);
         reflected = reflected.unit_vec() + Vector3d::random_unit_vector() * self.fuzz;
 
         if Vector3d::dot_product(reflected, hit_info.normal) <= 0.0 {

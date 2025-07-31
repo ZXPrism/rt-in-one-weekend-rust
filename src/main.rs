@@ -11,8 +11,11 @@ use scene::*;
 use vector::*;
 
 use crate::scene::{
-    drawable::sphere::Sphere, material::diffuse_material::DiffuseMaterial,
-    material::metal_material::MetalMaterial,
+    drawable::sphere::Sphere,
+    material::{
+        dielectric_material::DielectricMaterial, diffuse_material::DiffuseMaterial,
+        metal_material::MetalMaterial,
+    },
 };
 
 fn main() {
@@ -20,8 +23,8 @@ fn main() {
         800,
         90.0,
         16.0 / 9.0,
-        Vector3d::new([0.0, 0.0, -1.0]),
-        Vector3d::new([0.0, 0.0, 1.0]),
+        Vector3d::new([0.0, 1.0, -1.0]),
+        Vector3d::new([0.0, 0.0, 0.0]),
         128,
         32,
     );
@@ -31,6 +34,7 @@ fn main() {
     let diffuse = Rc::new(DiffuseMaterial::new(Color::new([0.1, 0.2, 0.5])));
     let diffuse_ground = Rc::new(DiffuseMaterial::new(Color::new([0.8, 0.8, 0.0])));
     let metal = Rc::new(MetalMaterial::new(Color::new([0.7, 0.7, 0.5]), 0.0));
+    let dielectric = Rc::new(DielectricMaterial::new(1.5));
 
     main_scene.add_object(Box::new(Sphere::new(
         Vector3d::new([0.0, 0.0, 1.0]),
@@ -50,7 +54,7 @@ fn main() {
     main_scene.add_object(Box::new(Sphere::new(
         Vector3d::new([1.2, 0.0, 1.0]),
         0.5,
-        metal.clone(),
+        dielectric.clone(),
     )));
 
     main_camera.render(&main_scene);

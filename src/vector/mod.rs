@@ -1,5 +1,5 @@
 use rand::Rng;
-use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Sub};
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub};
 
 pub mod alias;
 pub use alias::*;
@@ -100,6 +100,32 @@ where
         }
 
         res.sqrt()
+    }
+
+    pub fn length_squared(self) -> Ty {
+        let mut res = Ty::default();
+
+        for i in 0..N {
+            res += self.data[i] * self.data[i];
+        }
+
+        res
+    }
+}
+
+impl<const N: usize> Vector<f32, N> {
+    /// `normal` must be normalized first
+    /// while `in_vec` is not required to be normalized
+    pub fn reflect(in_vec: Self, normal: Self) -> Self {
+        in_vec - normal * 2.0 * Self::dot_product(in_vec, normal)
+    }
+}
+
+impl<const N: usize> Vector<f64, N> {
+    /// `normal` must be normalized first
+    /// while `in_vec` is not required to be normalized
+    pub fn reflect(in_vec: Self, normal: Self) -> Self {
+        in_vec - normal * 2.0 * Self::dot_product(in_vec, normal)
     }
 }
 

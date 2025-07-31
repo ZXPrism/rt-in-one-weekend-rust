@@ -11,6 +11,7 @@ pub struct Scene {
 
 pub struct HitInfo {
     pub if_hit: bool,
+    pub front_face: bool,
     pub t: f64,
     pub normal: Vector3d, // NOTE: should be normalized to a unit vector
     pub scatter_ray: Ray,
@@ -21,6 +22,7 @@ impl Default for HitInfo {
     fn default() -> Self {
         HitInfo {
             if_hit: false,
+            front_face: true,
             t: f64::INFINITY,
             normal: Vector3d::zeros(),
             scatter_ray: Ray::default(),
@@ -56,7 +58,7 @@ impl Scene {
         }
 
         if hit_obj_idx != n {
-            self.objects[hit_obj_idx].fill_info(ray, &mut res_hit_info);
+            self.objects[hit_obj_idx].scatter(ray, &mut res_hit_info);
         }
 
         res_hit_info

@@ -50,6 +50,7 @@ impl Drawable for Sphere {
     fn scatter(&self, ray: &Ray, hit_info: &mut HitInfo) {
         hit_info.normal = ray.at(hit_info.t) - self.center;
         hit_info.normal /= self.radius;
+        hit_info.front_face = Vector3d::dot_product(ray.direction, hit_info.normal) <= 0.0;
         hit_info.if_hit = self.material.scatter(ray, hit_info);
     }
 }

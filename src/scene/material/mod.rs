@@ -1,3 +1,4 @@
+pub mod dielectric_material;
 pub mod diffuse_material;
 pub mod metal_material;
 
