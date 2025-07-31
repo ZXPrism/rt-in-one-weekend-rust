@@ -88,20 +88,9 @@ impl Camera {
             return Color::zeros();
         }
 
-        let mut rng = rand::rng();
-
         let hit_info = scene.hit_test(&primary_ray);
         if hit_info.if_hit {
-            // Lambertian reflection (why? need math proof...)
-            let hit_point = primary_ray.at(hit_info.t);
-            let delta = Vector3d::new([
-                rng.random_range(-1.0..=1.0),
-                rng.random_range(-1.0..=1.0),
-                rng.random_range(-1.0..=1.0),
-            ]);
-            let scatter_ray = Ray::new(hit_point, hit_info.normal + delta);
-
-            self.hit_test(&scatter_ray, scene, remaining_bounce - 1) * 0.5
+            self.hit_test(&hit_info.scatter_ray, scene, remaining_bounce - 1) * hit_info.albedo
         } else {
             let mut t = primary_ray.direction.unit_vec()[1];
             t = (t + 1.0) * 0.5;

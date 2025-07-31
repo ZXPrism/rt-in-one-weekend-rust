@@ -14,3 +14,12 @@ impl Ray {
         self.origin + self.direction * t
     }
 }
+
+impl Default for Ray {
+    fn default() -> Self {
+        Ray {
+            origin: Vector3d::zeros(),
+            direction: Vector3d::zeros(),
+        }
+    }
+}

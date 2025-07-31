@@ -1,10 +1,9 @@
 pub mod drawable;
-
-use std::cmp;
+pub mod material;
 
 use drawable::*;
 
-use crate::{ray::Ray, vector::Vector3d};
+use crate::{ray::Ray, vector::Color, vector::Vector3d};
 
 pub struct Scene {
     objects: Vec<Box<dyn Drawable>>,
@@ -14,6 +13,8 @@ pub struct HitInfo {
     pub if_hit: bool,
     pub t: f64,
     pub normal: Vector3d, // NOTE: should be normalized to a unit vector
+    pub scatter_ray: Ray,
+    pub albedo: Color,
 }
 
 impl Default for HitInfo {
@@ -22,6 +23,8 @@ impl Default for HitInfo {
             if_hit: false,
             t: f64::INFINITY,
             normal: Vector3d::zeros(),
+            scatter_ray: Ray::default(),
+            albedo: Color::zeros(),
         }
     }
 }
@@ -41,10 +44,8 @@ impl Scene {
         for obj in &self.objects {
             let hit_info = obj.hit_test(ray);
             if hit_info.if_hit && hit_info.t > 0.00001 {
-                res_hit_info.if_hit = true;
                 if hit_info.t < res_hit_info.t {
-                    res_hit_info.t = hit_info.t;
-                    res_hit_info.normal = hit_info.normal;
+                    res_hit_info = hit_info;
                 }
             }
         }

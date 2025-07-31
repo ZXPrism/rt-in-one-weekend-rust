@@ -1,15 +1,22 @@
-use crate::vector::Vector3d;
+use std::rc::Rc;
+
+use crate::{scene::material::Material, vector::Vector3d};
 
 use super::*;
 
 pub struct Sphere {
     center: Vector3d,
     radius: f64,
+    material: Rc<dyn Material>,
 }
 
 impl Sphere {
-    pub fn new(center: Vector3d, radius: f64) -> Sphere {
-        Sphere { center, radius }
+    pub fn new(center: Vector3d, radius: f64, material: Rc<dyn Material>) -> Sphere {
+        Sphere {
+            center,
+            radius,
+            material,
+        }
     }
 }
 
@@ -39,6 +46,7 @@ impl Drawable for Sphere {
             if res_hit_info.if_hit {
                 res_hit_info.normal = ray.at(res_hit_info.t) - self.center;
                 res_hit_info.normal /= self.radius;
+                self.material.scatter(ray, &mut res_hit_info);
             }
         }
 
