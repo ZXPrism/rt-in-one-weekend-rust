@@ -21,12 +21,12 @@ use crate::scene::{
 
 fn main() {
     let main_camera = camera::Camera::new(
-        1920,
+        400,
         90.0,
         16.0 / 9.0,
         Vector3d::new([0.0, 1.5, -1.5]),
         Vector3d::new([0.0, 0.4, -0.2]),
-        256,
+        32,
         32,
         0.0,
         1.0,

@@ -1,5 +1,5 @@
 use rand::Rng;
-use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub};
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Sub};
 
 pub mod alias;
 pub use alias::*;
@@ -124,14 +124,6 @@ where
         }
 
         res
-    }
-}
-
-impl<const N: usize> Vector<f32, N> {
-    /// `normal` must be normalized first
-    /// while `in_vec` is not required to be normalized
-    pub fn reflect(in_vec: Self, normal: Self) -> Self {
-        in_vec - normal * 2.0 * Self::dot_product(in_vec, normal)
     }
 }
 
