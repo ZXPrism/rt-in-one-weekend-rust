@@ -1,5 +1,6 @@
 use super::*;
 
+#[derive(Clone)]
 pub struct DiffuseMaterial {
     albedo: Color,
 }

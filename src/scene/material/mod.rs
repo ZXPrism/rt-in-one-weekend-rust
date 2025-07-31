@@ -6,6 +6,6 @@ use crate::vector::Color;
 
 use super::*;
 
-pub trait Material {
+pub trait Material: Send + Sync {
     fn scatter(&self, ray_in: &Ray, hit_info: &mut HitInfo) -> bool;
 }

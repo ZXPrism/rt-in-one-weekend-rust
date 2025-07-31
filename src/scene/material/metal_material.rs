@@ -1,5 +1,6 @@
 use super::*;
 
+#[derive(Clone)]
 pub struct MetalMaterial {
     albedo: Color,
     fuzz: f64,

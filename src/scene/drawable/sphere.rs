@@ -7,11 +7,11 @@ use super::*;
 pub struct Sphere {
     center: Vector3d,
     radius: f64,
-    material: Rc<dyn Material>,
+    material: Box<dyn Material>,
 }
 
 impl Sphere {
-    pub fn new(center: Vector3d, radius: f64, material: Rc<dyn Material>) -> Sphere {
+    pub fn new(center: Vector3d, radius: f64, material: Box<dyn Material>) -> Sphere {
         Sphere {
             center,
             radius,

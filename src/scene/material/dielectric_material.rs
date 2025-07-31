@@ -2,6 +2,7 @@ use rand::Rng;
 
 use super::*;
 
+#[derive(Clone)]
 pub struct DielectricMaterial {
     refraction_index: f64,
 }

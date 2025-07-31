@@ -1,4 +1,5 @@
 use rand::Rng;
+use rayon::prelude::*;
 
 use crate::ImageWriter;
 use crate::ray::Ray;
@@ -71,35 +72,46 @@ impl Camera {
         let defocus_disk_v = camera_down_norm * defocus_radius;
 
         let mut image_writer = ImageWriter::new(self.image_width, self.image_height);
-        let mut rng = rand::rng();
 
-        for y in 0..self.image_height {
-            let mut pixel = pixel00 + viewport_v_delta * (y as f64);
+        let pixels: Vec<(usize, usize, Color)> = (0..self.image_height)
+            .into_par_iter()
+            .flat_map(|y| {
+                let mut rng = rand::rng();
+                let mut pixel = pixel00 + viewport_v_delta * (y as f64);
 
-            for x in 0..self.image_width {
-                let mut color = Vector3d::zeros();
+                (0..self.image_width)
+                    .map(move |x| {
+                        let mut color = Vector3d::zeros();
 
-                for _ in 0..self.sample_cnt {
-                    let sample_pixel = pixel
-                        + viewport_u_delta * rng.random_range(-0.5..=0.5)
-                        + viewport_v_delta * rng.random_range(-0.5..=0.5);
+                        for _ in 0..self.sample_cnt {
+                            let sample_pixel = pixel
+                                + viewport_u_delta * rng.random_range(-0.5..=0.5)
+                                + viewport_v_delta * rng.random_range(-0.5..=0.5);
 
-                    let random_disk = Vector3d::random_unit_disk();
-                    let defocus_origin = self.camera_center
-                        + defocus_disk_u * random_disk[0]
-                        + defocus_disk_v * random_disk[1];
+                            let random_disk = Vector3d::random_unit_disk();
+                            let defocus_origin = self.camera_center
+                                + defocus_disk_u * random_disk[0]
+                                + defocus_disk_v * random_disk[1];
 
-                    let primary_ray = Ray::new(defocus_origin, sample_pixel - self.camera_center);
+                            let primary_ray =
+                                Ray::new(defocus_origin, sample_pixel - self.camera_center);
 
-                    color += self.hit_test(&primary_ray, scene, self.max_bounce);
-                }
+                            color += self.hit_test(&primary_ray, scene, self.max_bounce);
+                        }
 
-                color /= self.sample_cnt as f64;
-                image_writer.set_pixel_color_vec(x, y, &color);
+                        color /= self.sample_cnt as f64;
 
-                pixel += viewport_u_delta;
-            }
-        }
+                        pixel += viewport_u_delta;
+
+                        (x, y, color)
+                    })
+                    .collect::<Vec<_>>()
+            })
+            .collect();
+
+        pixels.iter().for_each(|(x, y, color)| {
+            image_writer.set_pixel_color_vec(*x, *y, color);
+        });
 
         image_writer.write_to_file();
     }
