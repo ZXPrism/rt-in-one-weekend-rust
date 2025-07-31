@@ -10,6 +10,20 @@ As for the reason of choosing to do a ray tracer...That's because, it is fun and
 - Install [rustup](https://rustup.rs/)
 - Clone this repo, and run `cargo run --release`, wait for a while, then you will find the output `out.png` at the root folder.
 
+## Core Logic
+- `Camera` iterate on the 2d viewport surface's pixels and send rays (`Ray`) into the scene (`Scene`)
+- for one pixel's each sample
+    - `Scene` iterate on a list of objects (impl `Drawable`) and do ray-object intersection test
+    - if hit, the object firstly fills in struct `HitInfo` **with basic information (normal + front_face flag)**
+        - then call the `scatter` method of material (`Material`) bound to the object to calculate the scattered ray
+            - in the method, the new scattered ray is calculated and the albedo is set in the `HitInfo`
+    - `Scene` returns `HitInfo` to the `Camera`
+        - based on max bounce settings etc., `Camera` continues to call hit tests of `Scene`
+        - and finish the computation of one pixel
+
+### Dataflow
+Camera <-> Scene <-> Drawable <-> Material
+
 ## TODO
 - [ ] Implement Book I
     - [ ] Basics (pure on CPU)
