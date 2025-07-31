@@ -1,10 +1,14 @@
 # rt-in-one-weekend-rust
 
+![demo.png](demo.png)
+
 This is a rust implementation of the book series ["Ray Tracing in One Weekend"](https://raytracing.github.io/).
 
 I made this mainly for learning Rust, since I believe that the best way to learn a language is to use it.
 
 As for the reason of choosing to do a ray tracer...That's because, it is fun and romantic!
+
+
 
 ## Getting Started
 - Install [rustup](https://rustup.rs/)
@@ -26,7 +30,7 @@ Camera <-> Scene <-> Drawable <-> Material
 
 ## TODO
 - [ ] Implement Book I
-    - [ ] Basics (pure on CPU)
+    - [X] Basics (pure on CPU)
     - [ ] Optimize using multi-threading
     - [ ] Optimize using compute shaders (using [wgpu](https://github.com/gfx-rs/wgpu))
 - [ ] Implement Book II (TBD)
