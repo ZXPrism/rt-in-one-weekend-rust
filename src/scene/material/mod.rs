@@ -1,4 +1,5 @@
 pub mod diffuse_material;
+pub mod metal_material;
 
 use crate::vector::Color;
 

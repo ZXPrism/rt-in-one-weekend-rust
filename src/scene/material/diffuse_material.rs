@@ -24,5 +24,14 @@ impl Material for DiffuseMaterial {
 
         hit_info.albedo = self.albedo;
         hit_info.scatter_ray = Ray::new(hit_point, hit_info.normal + delta);
+
+        // zero vector correction
+        const EPS: f64 = 1e-8;
+        if hit_info.scatter_ray.direction[0].abs() < EPS
+            && hit_info.scatter_ray.direction[1].abs() < EPS
+            && hit_info.scatter_ray.direction[2].abs() < EPS
+        {
+            hit_info.scatter_ray.direction = hit_info.normal;
+        }
     }
 }
