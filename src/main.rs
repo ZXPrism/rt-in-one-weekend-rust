@@ -28,9 +28,8 @@ fn main() {
 
     let mut main_scene = Scene::new();
 
-    let diffuse = Rc::new(DiffuseMaterial::new(Color::new([0.1, 0.2, 0.5])));
-    let diffuse_ground = Rc::new(DiffuseMaterial::new(Color::new([0.8, 0.8, 0.0])));
-    let metal = Rc::new(MetalMaterial::new(Color::new([0.7, 0.7, 0.5]), 0.0));
+    let diffuse = Rc::new(DiffuseMaterial::new(Color::new([0.7, 0.7, 0.5])));
+    let metal = Rc::new(MetalMaterial::new(Color::new([0.7, 0.7, 0.5])));
 
     main_scene.add_object(Box::new(Sphere::new(
         Vector3d::new([0.0, 0.0, 1.0]),
@@ -40,11 +39,11 @@ fn main() {
     main_scene.add_object(Box::new(Sphere::new(
         Vector3d::new([0.0, -100.5, 1.0]),
         100.0,
-        diffuse_ground.clone(),
+        diffuse.clone(),
     )));
     main_scene.add_object(Box::new(Sphere::new(
-        Vector3d::new([-1.1, 0.1, 0.3]),
-        0.6,
+        Vector3d::new([-1.2, 0.0, 1.0]),
+        0.5,
         metal.clone(),
     )));
     main_scene.add_object(Box::new(Sphere::new(
