@@ -19,6 +19,7 @@ use crate::scene::{
 };
 
 fn main() {
+    // tweak these parameters to adjust the pespective and output quality
     let main_camera = camera::Camera::new(
         1920,
         50.0,

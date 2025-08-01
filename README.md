@@ -13,6 +13,10 @@ As for the reason of choosing to do a ray tracer...That's because, it is fun and
 ## Getting Started
 - Install [rustup](https://rustup.rs/)
 - Clone this repo, and run `cargo run --release`, wait for a while, then you will find the output `out.png` at the root folder.
+- Generating the front cover image (1920x1080, 512 samples per pixel, 64 max bounces) takes about 50s on my machine (AMD 9800X3D)
+    - You can tweak the parameters in `main.rs` to lower the time (with lower quality)
+    - Generally, to get a lower execution time, just set sample count to 32 or less
+        - the parameters don't necessarily to be a power of 2
 
 ## Core Logic
 - `Camera` iterate on the 2d viewport surface's pixels and send rays (`Ray`) into the scene (`Scene`)
