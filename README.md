@@ -12,7 +12,22 @@ As for the reason of choosing to do a ray tracer...That's because, it is fun and
 
 ## Getting Started
 - Install [rustup](https://rustup.rs/)
-- Clone this repo, and run `cargo run --release`, wait for a while, then you will find the output `out.png` at the root folder.
+- Clone this repo, and run `cargo build --release` to build the binary
+- Find the binary `rtow-rust` at folder `target/release`, you can either directly run it (using default values), or with additional arguments:
+
+    > Values don't necessarily to be a power of 2.
+
+    - `--output <file_name>`: the output file name, default `out.png`
+        - the format is always png which does not depend on your input
+        - so please set the name with extension `.png` for convenience
+    - `--width <WIDTH>`: output image width, default `800`
+    - `--height <HEIGHT>`: output image height, default `600`
+    - `--spp <SPP>`: samples per pixel, significantly affects the output quality, default `32`
+        - for best quality, set to `256` or more
+    - `--max-bounce <MAX_BOUNCE>`: max bounce time(hit test recursion depth) of a single ray, affects the output quality, default `32`
+    - `--fov <FOV>`: field of view, default `50.0`
+    - `--defocus-angle <DEFOCUS_ANGLE>`: depth of field settings, do not modify if you don't know what it is, default `0.0`
+    - `--focus-dist <FOCUS_DIST>`: depth of field settings, do not modify if you don't know what it is, default `1.0`
 
 ## Core Logic
 - `Camera` iterate on the 2d viewport surface's pixels and send rays (`Ray`) into the scene (`Scene`)

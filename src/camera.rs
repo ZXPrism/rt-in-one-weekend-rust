@@ -18,6 +18,9 @@ pub struct Camera {
     // depth-of-field settings
     defocus_angle: f64,
     focus_dist: f64,
+
+    // output
+    output_filename: String,
 }
 
 impl Camera {
@@ -31,6 +34,7 @@ impl Camera {
         max_bounce: usize,
         defocus_angle: f64,
         focus_dist: f64,
+        output_filename: &String,
     ) -> Self {
         Camera {
             image_width,
@@ -42,6 +46,7 @@ impl Camera {
             max_bounce,
             defocus_angle,
             focus_dist,
+            output_filename: output_filename.clone(),
         }
     }
 

@@ -18,17 +18,73 @@ use crate::scene::{
     },
 };
 
+use clap::Parser;
+
+#[derive(Parser)]
+#[command(name = "rt-in-one-weekend-rust")]
+#[command(author = "ZXPrism")]
+#[command(version = "1.0")]
+#[command(about = "A rust implementation of the famous ray tracing tutorial \"Ray Tracing in One Weekend\"", long_about = None)]
+struct CmdArgs {
+    #[arg(long, default_value = "out.png", help = "output image file name")]
+    output: String,
+
+    #[arg(long, default_value_t = 800, help = "output image width")]
+    width: usize,
+
+    #[arg(long, default_value_t = 600, help = "output image height")]
+    height: usize,
+
+    #[arg(
+        long,
+        default_value_t = 32,
+        help = "SPP (samples per pixel), significantly affects the output quality"
+    )]
+    spp: usize,
+
+    #[arg(
+        long,
+        default_value_t = 32,
+        help = "max bounce time (hit test recursion depth) of a single ray, affects the output quality"
+    )]
+    max_bounce: usize,
+
+    #[arg(
+        long,
+        default_value_t = 50.0,
+        help = "field of view, do not modify if you don't know what it is"
+    )]
+    fov: f64,
+
+    #[arg(
+        long,
+        default_value_t = 0.0,
+        help = "depth of field settings, do not modify if you don't know what it is"
+    )]
+    defocus_angle: f64,
+
+    #[arg(
+        long,
+        default_value_t = 1.0,
+        help = "depth of field settings, do not modify if you don't know what it is"
+    )]
+    focus_dist: f64,
+}
+
 fn main() {
+    let args = CmdArgs::parse();
+
     let main_camera = camera::Camera::new(
-        1920,
-        50.0,
-        16.0 / 9.0,
+        args.width,
+        args.fov,
+        (args.width as f64) / (args.height as f64),
         Vector3d::new([0.0, 1.2, -1.3]),
         Vector3d::new([0.0, 0.9, 0.0]),
-        512,
-        64,
-        0.0,
-        1.0,
+        args.spp,
+        args.max_bounce,
+        args.defocus_angle,
+        args.focus_dist,
+        &args.output,
     );
 
     let mut main_scene = Scene::new();
