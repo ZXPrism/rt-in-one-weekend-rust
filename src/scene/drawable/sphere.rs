@@ -1,5 +1,3 @@
-use std::rc::Rc;
-
 use crate::{scene::material::Material, vector::Vector3d};
 
 use super::*;
