@@ -2,6 +2,7 @@ mod camera;
 mod image_writer;
 mod ray;
 mod scene;
+mod utils;
 mod vector;
 
 use rand::Rng;
@@ -11,7 +12,7 @@ use scene::*;
 use vector::*;
 
 use crate::scene::{
-    drawable::sphere::Sphere,
+    drawable::{cuboid::Cuboid, sphere::Sphere},
     material::{
         Material, dielectric_material::DielectricMaterial, diffuse_material::DiffuseMaterial,
         metal_material::MetalMaterial,
@@ -130,7 +131,7 @@ fn main() {
 
             let random_radius = rng.random_range(0.1..0.35);
 
-            main_scene.add_object(Box::new(Sphere::new(
+            main_scene.add_object(Box::new(Cuboid::new(
                 Vector3d::new([
                     (i as f64) + rng.random_range(-0.5..0.5),
                     random_radius,
