@@ -31,7 +31,7 @@ impl ImageWriter {
         self.image.put_pixel(x as u32, y as u32, Rgb([r, g, b]));
     }
 
-    pub fn write_to_file(&self) {
-        self.image.save("out.png").unwrap();
+    pub fn write_to_file(&self, output_file_name: &str) {
+        self.image.save(output_file_name).unwrap();
     }
 }

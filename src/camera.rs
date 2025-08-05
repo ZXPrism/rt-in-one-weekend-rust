@@ -118,7 +118,7 @@ impl Camera {
             image_writer.set_pixel_color_vec(*x, *y, color);
         });
 
-        image_writer.write_to_file();
+        image_writer.write_to_file(&self.output_filename);
     }
 
     fn hit_test(&self, primary_ray: &Ray, scene: &Scene, remaining_bounce: usize) -> Color {
