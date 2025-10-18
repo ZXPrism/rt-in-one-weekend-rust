@@ -1,7 +1,9 @@
 mod camera;
+mod config;
 mod image_writer;
 mod ray;
 mod scene;
+mod utils;
 mod vector;
 
 use rand::Rng;
@@ -11,6 +13,7 @@ use scene::*;
 use vector::*;
 
 use crate::scene::{
+    drawable::quad::Quad,
     drawable::sphere::Sphere,
     material::{
         Material, dielectric_material::DielectricMaterial, diffuse_material::DiffuseMaterial,
@@ -89,13 +92,28 @@ fn main() {
 
     let mut main_scene = Scene::new();
 
-    let diffuse_ground = Box::new(DiffuseMaterial::new(Color::new([0.2, 0.2, 0.2])));
+    let diffuse_ground = Box::new(DiffuseMaterial::new(Color::new([0.5, 0.5, 0.5])));
 
-    main_scene.add_object(Box::new(Sphere::new(
-        Vector3d::new([0.0, -1000.0, 1.0]),
-        1000.0,
-        diffuse_ground,
+    // ground
+    main_scene.add_object(Box::new(Quad::new(
+        Vector3d::new([-500.0, 0.0, 500.0]),
+        Vector3d::new([1000.0, 0.0, 0.0]),
+        Vector3d::new([0.0, 0.0, -1000.0]),
+        diffuse_ground.clone(),
     )));
+    // main_scene.add_object(Box::new(Sphere::new(
+    //     Vector3d::new([0.0, -1000.0, 1.0]),
+    //     1000.0,
+    //     diffuse_ground,
+    // )));
+
+    // test quad
+    // main_scene.add_object(Box::new(Quad::new(
+    //     Vector3d::new([0.0, 0.0, 3.0]),
+    //     Vector3d::new([2.0, 1.0, 0.0]),
+    //     Vector3d::new([-1.0, 2.0, 0.0]),
+    //     diffuse_ground.clone(),
+    // )));
 
     let mut rng = rand::rng();
 

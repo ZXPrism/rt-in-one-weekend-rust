@@ -1,5 +1,5 @@
 use rand::Rng;
-use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Sub};
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub};
 
 pub mod alias;
 pub use alias::*;
@@ -155,6 +155,23 @@ impl<Ty, const N: usize> Index<usize> for Vector<Ty, N> {
 impl<Ty, const N: usize> IndexMut<usize> for Vector<Ty, N> {
     fn index_mut(&mut self, index: usize) -> &mut Ty {
         &mut self.data[index]
+    }
+}
+
+impl<Ty, const N: usize> Neg for Vector<Ty, N>
+where
+    Ty: Default + Copy + Neg<Output = Ty>,
+{
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        let mut res = Vector::zeros();
+
+        for i in 0..N {
+            res.data[i] = -self.data[i];
+        }
+
+        res
     }
 }
 

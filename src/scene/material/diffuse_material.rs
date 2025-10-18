@@ -1,4 +1,5 @@
 use super::*;
+use crate::config;
 
 #[derive(Clone)]
 pub struct DiffuseMaterial {
@@ -17,15 +18,14 @@ impl Material for DiffuseMaterial {
         let delta = Vector3d::random_unit_sphere();
 
         hit_info.albedo = self.albedo;
-        hit_info.scatter_ray = Ray::new(hit_point, hit_info.normal + delta);
+        hit_info.scatter_ray = Ray::new(hit_point, hit_info.normal_norm + delta);
 
         // zero vector correction
-        const EPS: f64 = 1e-8;
-        if hit_info.scatter_ray.direction[0].abs() < EPS
-            && hit_info.scatter_ray.direction[1].abs() < EPS
-            && hit_info.scatter_ray.direction[2].abs() < EPS
+        if hit_info.scatter_ray.direction[0].abs() < config::EPS
+            && hit_info.scatter_ray.direction[1].abs() < config::EPS
+            && hit_info.scatter_ray.direction[2].abs() < config::EPS
         {
-            hit_info.scatter_ray.direction = hit_info.normal;
+            hit_info.scatter_ray.direction = hit_info.normal_norm;
         }
 
         true

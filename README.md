@@ -44,10 +44,14 @@ As for the reason of choosing to do a ray tracer...That's because, it is fun and
 Camera <-> Scene <-> Drawable <-> Material
 
 ## TODO
-- [ ] Implement Book I
+- [X] Implement Book I
     - [X] Basics (pure on CPU)
     - [X] Optimize using multi-threading
-    - [ ] Optimize using compute shaders (using [wgpu](https://github.com/gfx-rs/wgpu))
+- [ ] Add more primitives
+        - [ ] triangle
+        - [ ] quad
+        - [ ] parallelepiped
+- [ ] Optimize using compute shaders (using [wgpu](https://github.com/gfx-rs/wgpu)), WIP
 - [ ] Implement Book II (TBD)
 - [ ] Implement Book III (TBD)
 

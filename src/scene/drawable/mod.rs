@@ -1,5 +1,6 @@
 use super::*;
 
+pub mod quad;
 pub mod sphere;
 
 pub trait Drawable: Send + Sync {

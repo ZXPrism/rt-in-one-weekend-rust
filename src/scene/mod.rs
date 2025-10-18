@@ -13,7 +13,7 @@ pub struct HitInfo {
     pub if_hit: bool,
     pub front_face: bool,
     pub t: f64,
-    pub normal: Vector3d, // NOTE: should be normalized to a unit vector
+    pub normal_norm: Vector3d,
     pub scatter_ray: Ray,
     pub albedo: Color,
 }
@@ -24,7 +24,7 @@ impl Default for HitInfo {
             if_hit: false,
             front_face: true,
             t: f64::INFINITY,
-            normal: Vector3d::zeros(),
+            normal_norm: Vector3d::zeros(),
             scatter_ray: Ray::default(),
             albedo: Color::zeros(),
         }

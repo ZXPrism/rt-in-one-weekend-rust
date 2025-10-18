@@ -20,9 +20,9 @@ impl Material for DielectricMaterial {
         let ray_in_norm = ray_in.direction.unit_vec();
 
         let co_norm = if hit_info.front_face {
-            hit_info.normal * -1.0
+            hit_info.normal_norm * -1.0
         } else {
-            hit_info.normal
+            hit_info.normal_norm
         }; // the norm which is on the same side of the surface with the incident ray (i.e. dot product >= 0)
 
         let ri = if hit_info.front_face {
@@ -42,7 +42,8 @@ impl Material for DielectricMaterial {
         if ri * sin_theta >= 1.0
             || r0 + (1.0 - r0) * (1.0 - cos_theta).powi(5) > rng.random_range(0.0..=1.0)
         {
-            hit_info.scatter_ray.direction = Vector3d::reflect(ray_in.direction, hit_info.normal);
+            hit_info.scatter_ray.direction =
+                Vector3d::reflect(ray_in.direction, hit_info.normal_norm);
         } else {
             let scatter_ray_perp =
                 (ray_in_norm - co_norm * Vector3d::dot_product(ray_in_norm, co_norm)) * ri;
