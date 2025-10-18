@@ -1,5 +1,6 @@
 use super::*;
 
+pub mod parallelepiped;
 pub mod quad;
 pub mod sphere;
 

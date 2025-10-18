@@ -6,6 +6,8 @@ mod scene;
 mod utils;
 mod vector;
 
+use std::sync::Arc;
+
 use rand::Rng;
 
 use image_writer::*;
@@ -13,6 +15,7 @@ use scene::*;
 use vector::*;
 
 use crate::scene::{
+    drawable::parallelepiped::Parallelepiped,
     drawable::quad::Quad,
     drawable::sphere::Sphere,
     material::{
@@ -92,27 +95,19 @@ fn main() {
 
     let mut main_scene = Scene::new();
 
-    let diffuse_ground = Box::new(DiffuseMaterial::new(Color::new([0.5, 0.5, 0.5])));
+    let diffuse_ground = Arc::new(DiffuseMaterial::new(Color::new([0.2, 0.2, 0.2])));
 
     // ground
     main_scene.add_object(Box::new(Quad::new(
-        Vector3d::new([-500.0, 0.0, 500.0]),
-        Vector3d::new([1000.0, 0.0, 0.0]),
-        Vector3d::new([0.0, 0.0, -1000.0]),
+        Vector3d::new([-5000.0, 0.0, 5000.0]),
+        Vector3d::new([10000.0, 0.0, 0.0]),
+        Vector3d::new([0.0, 0.0, -10000.0]),
         diffuse_ground.clone(),
     )));
     // main_scene.add_object(Box::new(Sphere::new(
     //     Vector3d::new([0.0, -1000.0, 1.0]),
     //     1000.0,
     //     diffuse_ground,
-    // )));
-
-    // test quad
-    // main_scene.add_object(Box::new(Quad::new(
-    //     Vector3d::new([0.0, 0.0, 3.0]),
-    //     Vector3d::new([2.0, 1.0, 0.0]),
-    //     Vector3d::new([-1.0, 2.0, 0.0]),
-    //     diffuse_ground.clone(),
     // )));
 
     let mut rng = rand::rng();
@@ -138,12 +133,12 @@ fn main() {
             }
 
             let material_choice = rng.random_range(0..10);
-            let material: Box<dyn Material> = if material_choice <= 5 {
-                Box::new(DiffuseMaterial::new(random_color))
+            let material: Arc<dyn Material> = if material_choice <= 3 {
+                Arc::new(DiffuseMaterial::new(random_color))
             } else if material_choice <= 7 {
-                Box::new(MetalMaterial::new(random_color, 0.0))
+                Arc::new(MetalMaterial::new(random_color, 0.0))
             } else {
-                Box::new(DielectricMaterial::new(1.5))
+                Arc::new(DielectricMaterial::new(1.5))
             };
 
             let random_radius = rng.random_range(0.1..0.35);
@@ -157,6 +152,14 @@ fn main() {
                 random_radius,
                 material,
             )));
+
+            // main_scene.add_object(Box::new(Parallelepiped::new(
+            //     Vector3d::new([i as f64, 0.0, j as f64]),
+            //     Vector3d::new([0.707, 0.0, 0.707]) / 2.0,
+            //     Vector3d::new([-0.707, 0.0, 0.707]) / 2.0,
+            //     Vector3d::new([0.0, 1.0, 0.0]) / 2.0,
+            //     material,
+            // )));
         }
     }
 

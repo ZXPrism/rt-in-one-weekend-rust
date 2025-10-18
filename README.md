@@ -49,8 +49,8 @@ Camera <-> Scene <-> Drawable <-> Material
     - [X] Optimize using multi-threading
 - [ ] Add more primitives
         - [ ] triangle
-        - [ ] quad
-        - [ ] parallelepiped
+        - [X] quad
+        - [X] parallelepiped
 - [ ] Optimize using compute shaders (using [wgpu](https://github.com/gfx-rs/wgpu)), WIP
 - [ ] Implement Book II (TBD)
 - [ ] Implement Book III (TBD)

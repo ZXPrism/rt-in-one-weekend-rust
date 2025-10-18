@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use crate::{scene::material::Material, vector::Vector3d};
 
 use super::*;
@@ -5,11 +7,11 @@ use super::*;
 pub struct Sphere {
     center: Vector3d,
     radius: f64,
-    material: Box<dyn Material>,
+    material: Arc<dyn Material>,
 }
 
 impl Sphere {
-    pub fn new(center: Vector3d, radius: f64, material: Box<dyn Material>) -> Sphere {
+    pub fn new(center: Vector3d, radius: f64, material: Arc<dyn Material>) -> Sphere {
         Sphere {
             center,
             radius,

@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use crate::{config, scene::material::Material, utils::interval::Interval, vector::Vector3d};
 
 use super::*;
@@ -6,7 +8,7 @@ pub struct Quad {
     corner: Vector3d,
     u: Vector3d,
     v: Vector3d,
-    material: Box<dyn Material>,
+    material: Arc<dyn Material>,
 
     // precomputed helpers
     normal_norm: Vector3d,
@@ -15,7 +17,7 @@ pub struct Quad {
 }
 
 impl Quad {
-    pub fn new(corner: Vector3d, u: Vector3d, v: Vector3d, material: Box<dyn Material>) -> Quad {
+    pub fn new(corner: Vector3d, u: Vector3d, v: Vector3d, material: Arc<dyn Material>) -> Quad {
         let normal = Vector3d::cross_product(u, v);
         let normal_norm = normal.unit_vec();
         let w = normal / Vector3d::length_squared(normal);
@@ -36,7 +38,7 @@ impl Drawable for Quad {
     fn hit_test(&self, ray: &Ray) -> HitInfo {
         let mut res_hit_info = HitInfo::default();
 
-        let t_denominator = Vector3d::dot_product(self.normal_norm, ray.direction.unit_vec());
+        let t_denominator = Vector3d::dot_product(self.normal_norm, ray.direction);
         if t_denominator.abs() < config::EPS {
             return res_hit_info;
         }
@@ -62,11 +64,12 @@ impl Drawable for Quad {
     }
 
     fn scatter(&self, ray: &Ray, hit_info: &mut HitInfo) {
-        hit_info.normal_norm = if Vector3d::dot_product(ray.direction, self.normal_norm) >= 0.0 {
-            -self.normal_norm
+        if Vector3d::dot_product(ray.direction, self.normal_norm) >= 0.0 {
+            hit_info.front_face = false;
         } else {
-            self.normal_norm
+            hit_info.front_face = true;
         };
+        hit_info.normal_norm = self.normal_norm;
         hit_info.if_hit = self.material.scatter(ray, hit_info);
     }
 }

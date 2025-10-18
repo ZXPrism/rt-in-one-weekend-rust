@@ -20,7 +20,7 @@ impl Material for DielectricMaterial {
         let ray_in_norm = ray_in.direction.unit_vec();
 
         let co_norm = if hit_info.front_face {
-            hit_info.normal_norm * -1.0
+            -hit_info.normal_norm
         } else {
             hit_info.normal_norm
         }; // the norm which is on the same side of the surface with the incident ray (i.e. dot product >= 0)
